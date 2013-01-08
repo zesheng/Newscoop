@@ -464,4 +464,8 @@ class WeatherStat extends Entity
         return $this;
     }
 
+    public function exists()
+    {
+        return true;
+    }
 }

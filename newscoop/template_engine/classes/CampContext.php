@@ -132,6 +132,12 @@ final class CampContext
         	'class' => 'Playlist',
         	'list' => 'playlist',
 			'url_id' => 'pls'
+        ),
+        'weatherstat' => array
+        (
+            'class' => 'WeatherStat', 
+            'list' => 'weather_stat',
+            'url_id' => 'wss'
         )
     );
 

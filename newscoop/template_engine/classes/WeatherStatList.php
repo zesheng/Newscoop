@@ -62,7 +62,6 @@ class WeatherStatList extends ListObject
         $weatherStatList = array();
 	    foreach ($weatherStats as $stat) {
             $metaWeatherStat = new MetaWeatherStat($stat->getId());
-            //var_dump($metaWeatherStat);
 	        $weatherStatList[] = $metaWeatherStat;
 	    }
 
