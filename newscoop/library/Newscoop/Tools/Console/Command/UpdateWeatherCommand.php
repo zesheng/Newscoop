@@ -146,6 +146,7 @@ class UpdateWeatherCommand extends Console\Command\Command
                 );
                 $weatherStatRepository->save($weatherStat, $values);
                 $weatherStatRepository->flush();
+                return true;
             }
         }
     }
@@ -181,11 +182,15 @@ class UpdateWeatherCommand extends Console\Command\Command
                         );
                         $weatherStatRepository->save($weatherStat, $values);
                         $weatherStatRepository->flush();
+                        return true;
                     }
                 } else {
-                    next;
+                    continue;
                 }
             }
         }
+
+        return false;
     }
+
 }
