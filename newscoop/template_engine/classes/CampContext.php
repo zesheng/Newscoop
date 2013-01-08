@@ -58,7 +58,10 @@ final class CampContext
         ),
         'user_comment' => array(
             'class' => 'Comment',
-        )
+        ),
+        'weather_location' => array(
+            'class' => 'WeatherStat', 
+        ),
     );
 
     // Defines the list objects

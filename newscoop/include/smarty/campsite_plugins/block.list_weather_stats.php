@@ -42,7 +42,6 @@ function smarty_block_list_weather_stats($p_params, $p_content, &$p_smarty, &$p_
         $context->current_list->defaultIterator()->next();
         if (!is_null($context->current_weather_stat_list->current)) {
             $context->weather_location = $context->current_weather_stat_list->current;
-            //var_dump($context->current_weather_stat_list->current);
             $p_repeat = true;
         } else {
             $context->resetCurrentList();

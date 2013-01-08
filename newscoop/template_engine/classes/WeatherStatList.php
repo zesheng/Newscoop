@@ -47,7 +47,12 @@ class WeatherStatList extends ListObject
         }
         if (isset($p_parameters['hour']) && trim($p_parameters['hour'])!="") {
             $criteria = array_merge($criteria, array( "hour" => $p_parameters['hour'] ));
+        } else {
+            // use current hour
+            $hour = date('G');
+            $criteria = array_merge($criteria, array( "hour" => $hour ));
         }
+
         $weatherStats = $repo->findBy($criteria);
 
         $length = null;
