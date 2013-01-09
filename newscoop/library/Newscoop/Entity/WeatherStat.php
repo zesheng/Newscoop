@@ -23,8 +23,8 @@ class WeatherStat extends Entity
     protected $id;
 
     /**
-     * @Column(type="integer", name="location_id")
-     * @Var int
+     * @Column(name="location_id")
+     * @Var string
      */
     private $locationId;
 
@@ -57,6 +57,12 @@ class WeatherStat extends Entity
      * @Var int 
      */
     private $hour;
+
+    /**
+     * @Column(type="integer", name="symbol")
+     * @Var int 
+     */
+    private $symbol;
 
     /**
      * @Column(type="integer", name="temperature", nullable=True)
@@ -170,6 +176,14 @@ class WeatherStat extends Entity
     public function getHour()
     {
         return $this->hour;
+    }
+
+    /**
+     * @return int 
+     */
+    public function getSymbol()
+    {
+        return $this->symbol;
     }
 
     /**
@@ -341,6 +355,18 @@ class WeatherStat extends Entity
     public function setHour($hour)
     {
         $this->hour = $hour;
+        return $this;
+    }
+
+    /**
+     * Set symbol
+     *
+     * @param int $symbol
+     * @return Newscoop\Entity\WeatherStat
+     */
+    public function setSymbol($symbol)
+    {
+        $this->symbol = $symbol;
         return $this;
     }
 

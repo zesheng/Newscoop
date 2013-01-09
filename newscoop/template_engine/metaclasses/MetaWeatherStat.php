@@ -25,6 +25,7 @@ final class MetaWeatherStat extends MetaDbObject
         'location_list' => 'getLocationList',
         'region_name' => 'getRegionName',
         'hour' => 'getHour',
+        'symbol' => 'getSymbol',
         'temperature' => 'getTemperature',
         'temperature_min' => 'getTemperatureMin',
         'temperature_max' => 'getTemperatureMax',
@@ -80,6 +81,11 @@ final class MetaWeatherStat extends MetaDbObject
     protected function getHour()
     {
         return $this->m_dbObject->getHour();
+    }
+
+    protected function getSymbol()
+    {
+        return $this->m_dbObject->getSymbol();
     }
 
     protected function getTemperature()

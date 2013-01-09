@@ -47,13 +47,16 @@ class WeatherStatRepository extends EntityRepository
             ->setHour($values['hour'])
             ->setTimeUpdated(new \DateTime);
 
+        if (isset($values['symbol'])) {
+            $entity->setSymbol($values['symbol']);
+        }
         if (isset($values['temperature'])) {
             $entity->setTemperature($values['temperature']);
         }
         if (isset($values['temperature_min'])) {
             $entity->setTemperatureMin($values['temperature_min']);
         }
-        if (isset($values['temperatureMax'])) {
+        if (isset($values['temperature_max'])) {
             $entity->setTemperatureMax($values['temperature_max']);
         }
         if (isset($values['precip'])) {

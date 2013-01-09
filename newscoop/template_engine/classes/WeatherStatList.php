@@ -45,6 +45,9 @@ class WeatherStatList extends ListObject
         if (isset($p_parameters['location_list']) && trim($p_parameters['location_list'])!="") {
             $criteria = array_merge($criteria, array( "locationList" => $p_parameters['location_list'] ));
         }
+        if (isset($p_parameters['region_name']) && trim($p_parameters['region_name'])!="") {
+            $criteria = array_merge($criteria, array( "regionName" => $p_parameters['region_name'] ));
+        }
         if (isset($p_parameters['hour']) && trim($p_parameters['hour'])!="") {
             $criteria = array_merge($criteria, array( "hour" => $p_parameters['hour'] ));
         } else {
@@ -65,9 +68,17 @@ class WeatherStatList extends ListObject
         }
 
         $weatherStatList = array();
+        $count = 0;
 	    foreach ($weatherStats as $stat) {
-            $metaWeatherStat = new MetaWeatherStat($stat->getId());
-	        $weatherStatList[] = $metaWeatherStat;
+            if ((count($weatherStatList) < $length) || (!isset($length))){
+                if ((isset($start)) && ($count < $start)) {
+                    $count++;
+                    continue; 
+                } else {
+                    $metaWeatherStat = new MetaWeatherStat($stat->getId());
+	                $weatherStatList[] = $metaWeatherStat;
+                }
+            }
 	    }
 
 	    $p_count = count($weatherStats);
@@ -123,7 +134,8 @@ class WeatherStatList extends ListObject
 	    			$parameters[$parameter] = (int)$value;
 	                break;
                 case 'location_list' :
-	            case 'location_name' :
+                case 'location_name' :
+                case 'region_name' :
 	                $parameters[$parameter] = (string)$value;
 	                break;
 	            case 'location_id' :
