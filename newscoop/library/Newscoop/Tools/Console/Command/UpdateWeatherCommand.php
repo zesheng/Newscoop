@@ -58,7 +58,8 @@ class UpdateWeatherCommand extends Console\Command\Command
                     $location->name,
                     $locationType,
                     $list,
-                    $location->region
+                    $location->region,
+                    $location->elevation
                 );
             }
         }
@@ -75,7 +76,8 @@ class UpdateWeatherCommand extends Console\Command\Command
                     $location->name,
                     'mexs',
                     $list,
-                    $location->region
+                    $location->region,
+                    $location->elevation
                 );
 
                 // get wintersports data
@@ -112,7 +114,8 @@ class UpdateWeatherCommand extends Console\Command\Command
                         $locationName,
                         'mexs',
                         'all_slopes',
-                        $location->name
+                        $location->name,
+                        $location->elevation
                     );
                 }
             } 
@@ -139,7 +142,7 @@ class UpdateWeatherCommand extends Console\Command\Command
         }
     }
 
-    protected function saveForecastData($xml,$locationId,$locationName,$locationType,$locationList,$regionName)
+    protected function saveForecastData($xml,$locationId,$locationName,$locationType,$locationList,$regionName,$locationElevation)
     {
         $em = \Zend_Registry::get('container')->getService('em');
         $weatherStatRepository = $em->getRepository('Newscoop\Entity\WeatherStat'); 
@@ -169,7 +172,8 @@ class UpdateWeatherCommand extends Console\Command\Command
                     'temperature_max' => (int)($record->temp_max) ? $record->temp_max : 0,
                     'precip' => (int)($record->precip) ? $record->precip : 0,
                     'winddir' => (int)($record->winddir) ? $record->winddir : 0,
-                    'windforce' => (int)($record->windforce) ? $record->windforce : 0
+                    'windforce' => (int)($record->windforce) ? $record->windforce : 0,
+                    'elevation' => (int)$locationElevation
                 );
                 $weatherStatRepository->save($weatherStat, $values);
                 $weatherStatRepository->flush();
