@@ -51,5 +51,3 @@ function smarty_block_list_weather_stats($p_params, $p_content, &$p_smarty, &$p_
 
     return $p_content;
 }
-
-?>
