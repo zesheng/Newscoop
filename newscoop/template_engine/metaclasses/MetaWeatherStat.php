@@ -46,11 +46,11 @@ final class MetaWeatherStat extends MetaDbObject
         $this->m_properties = self::$m_baseProperties;
         $this->m_customProperties = self::$m_defaultCustomProperties;
 
-        if(is_null($id))
+        if (is_null($id)) {
             $this->m_dbObject = $repository->getPrototype();
-        else
+        } else {
             $this->m_dbObject = $repository->find($id);
-
+        }
     }
 
     protected function getLocationName()
