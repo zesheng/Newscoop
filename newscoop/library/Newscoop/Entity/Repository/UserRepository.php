@@ -502,7 +502,7 @@ class UserRepository extends EntityRepository
      * Get list for given criteria
      *
      * @param Newscoop\User\UserCriteria $criteria
-     * @return Newscoop\ListReselt
+     * @return Newscoop\ListResult
      */
     public function getListByCriteria(UserCriteria $criteria)
     {
