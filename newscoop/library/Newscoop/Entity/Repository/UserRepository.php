@@ -7,9 +7,11 @@
 
 namespace Newscoop\Entity\Repository;
 
-use Doctrine\ORM\EntityRepository,
-    Doctrine\ORM\Query\Expr,
-    Newscoop\Entity\User;
+use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\Query\Expr;
+use Newscoop\Entity\User;
+use Newscoop\User\UserCriteria;
+use Newscoop\ListResult;
 
 /**
  * User repository
@@ -494,5 +496,76 @@ class UserRepository extends EntityRepository
             $user->addAttribute($attribute->getName(), null);
             $this->getEntityManager()->remove($attribute);
         }
+    }
+
+    /**
+     * Get list for given criteria
+     *
+     * @param Newscoop\User\UserCriteria $criteria
+     * @return Newscoop\ListReselt
+     */
+    public function getListByCriteria(UserCriteria $criteria)
+    {
+        $qb = $this->createQueryBuilder('u');
+
+        $qb->andWhere('u.status = :status')
+            ->setParameter('status', $criteria->status);
+
+        $qb->andWhere('u.is_public = :is_public')
+            ->setParameter('is_public', $criteria->is_public);
+
+        if (!empty($criteria->groups)) {
+            $qb->leftJoin('u.groups', 'g', Expr\Join::WITH, 'g.id IN (:groups)');
+            $qb->setParameter('groups', $criteria->groups);
+            $qb->andWhere($criteria->excludeGroups ? 'g.id IS NULL' : 'g.id IS NOT NULL');
+        }
+
+        if (!empty($criteria->query)) {
+            $qb->andWhere("(u.username LIKE :query)");
+            $qb->setParameter('query', '%' . trim($criteria->query, '%') . '%');
+        }
+
+        if (!empty($criteria->nameRange)) {
+            $this->addNameRangeWhere($qb, $criteria->nameRange);
+        }
+
+        $list = new ListResult();
+        $list->count = (int) $qb->select('COUNT(u)')->getQuery()->getSingleScalarResult();
+
+        $qb->select('u, ' . $this->getUserPointsSelect());
+        $qb->setFirstResult($criteria->firstResult);
+        $qb->setMaxResults($criteria->maxResults);
+
+        foreach ($criteria->orderBy as $key => $order) {
+            $qb->orderBy("u.$key", $order);
+        }
+
+        $list->items = array_map(function ($row) {
+            $user = $row[0];
+            $user->setPoints((int) $row['comments']);
+            return $user;
+        }, $qb->getQuery()->getResult());
+
+        return $list;
+    }
+
+    /**
+     * Add name first letter where condition to query builder
+     *
+     * @param Doctrine\ORM\QueryBuilder $qb
+     * @param array $letters
+     * @return void
+     */
+    private function addNameRangeWhere($qb, array $letters)
+    {
+        $orx = $qb->expr()->orx();
+        foreach ($letters as $letter) {
+            $orx->add($qb->expr()->like(
+                'u.username',
+                $qb->expr()->literal(substr($letter, 0, 1) . '%')
+            ));
+        }
+
+        $qb->andWhere($orx);
     }
 }

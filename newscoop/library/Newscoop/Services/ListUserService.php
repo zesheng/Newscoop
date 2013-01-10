@@ -7,8 +7,9 @@
 
 namespace Newscoop\Services;
 
-use Doctrine\ORM\EntityManager,
-    Newscoop\Entity\User;
+use Doctrine\ORM\EntityManager;
+use Newscoop\Entity\User;
+use Newscoop\User\UserCriteria;
 
 /**
  * List User service
@@ -29,6 +30,17 @@ class ListUserService
     {
         $this->config = $config;
         $this->em = $em;
+    }
+
+    /**
+     * Find by criteria
+     *
+     * @param Newscoop\User\UserCriteria $criteria
+     * @return Newscoop\ListResult;
+     */
+    public function findByCriteria(UserCriteria $criteria)
+    {
+        return $this->getRepository()->getListByCriteria($criteria);
     }
 
     /**

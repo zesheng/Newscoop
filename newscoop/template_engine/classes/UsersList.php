@@ -5,6 +5,9 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.txt
  */
 
+use Newscoop\Entity\User;
+use Newscoop\User\UserCriteria;
+
 /**
  * Users list
  */
@@ -41,43 +44,46 @@ class UsersList extends ListObject
      */
     protected function CreateList($p_start = 0, $p_limit = 0, array $p_parameters, &$p_count)
     {
-        $service = $GLOBALS['controller']->getHelper('service')->getService('user.list');
-        $page = array_key_exists('page', $p_parameters)? $p_parameters['page'] : 1;
-        
-        if (in_array('random', array_keys($this->m_order))) { // random ordering
-            $users = $service->getRandomList($p_limit);
-        } else if (array_key_exists('search', $p_parameters)) {
-            $users = $service->findUsersBySearch($p_parameters['search'], false, $page, $p_limit);
+        $criteria = new UserCriteria();
+        $criteria->status = User::STATUS_ACTIVE;
+        $criteria->is_public = true;
+        $criteria->firstResult = $p_start;
+        $criteria->maxResults = $p_limit;
+
+        if (array_key_exists('search', $p_parameters)) {
+            $criteria->query = $p_parameters['search'];
         } else if (array_key_exists('filter', $p_parameters)) {
             $filter = $p_parameters['filter'];
-
+            $criteria->groups = !empty($p_parameters['editor_groups']) ? array_map('intval', explode(',', $p_parameters['editor_groups'])) : array();
             switch ($filter) {
                 case 'active':
-                    // example: filter="active"
-                    $users = $service->getActiveUsers(false, $page, $p_limit);
-
+                    $criteria->orderBy = array('points' => 'desc');
+                    $criteria->excludeGroups = true;
                     break;
+
                 case 'editors':
-                    // example: filter="editors" editor_groups="1,2,3,4"
-                    if (array_key_exists('editor_groups', $p_parameters)) {
-                        $users = $service->getActiveUsers(false, $page, $p_limit, explode(',', $p_parameters['editor_groups']));
-                    }
-
+                    $criteria->excludeGroups = false;
                     break;
+
                 default:
+                    $criteria->groups = array();
+
                     // example: filter="a-c"
                     if (preg_match('/([a-z])-([a-z])/', $filter, $matches)) {
-                        $users = $service->findUsersLastNameInRange(range($matches[1], $matches[2]), false, $page, $p_limit, true);
+                        $criteria->nameRange = range($matches[1], $matches[2]);
                     } else {
                         CampTemplate::singleton()->trigger_error("invalid parameter $filter in filter", $p_smarty);
                     }
+                    break;
             }
-        } else {
-            $users = $service->findBy($this->m_constraints, $this->m_order, $p_limit, $p_start);
         }
 
+        $service = $GLOBALS['controller']->getHelper('service')->getService('user.list');
+        $list = $service->findByCriteria($criteria);
+        $p_count = $list->count;
+
         $metaUsers = array();
-        foreach ($users as $user) {
+        foreach ($list->items as $user) {
             $metaUsers[] = new MetaUser($user);
         }
 
