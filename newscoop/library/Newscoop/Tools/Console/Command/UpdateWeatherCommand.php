@@ -14,8 +14,6 @@ use Symfony\Component\Console\Input\InputArgument,
     Symfony\Component\Console\Output\OutputInterface,
     Newscoop\Entity\WeatherStat;
 
-ini_set('memory_limit','128M');
-
 /**
  * Update weather command
  */
