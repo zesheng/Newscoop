@@ -19,6 +19,8 @@ use Newscoop\Entity\WeatherStat;
  */
 class UpdateWeatherCommand extends Console\Command\Command
 {
+    private $config;
+
     /**
      * @see Console\Command\Command
      */
@@ -36,7 +38,8 @@ class UpdateWeatherCommand extends Console\Command\Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $config = new \Zend_Config_Ini( APPLICATION_PATH . '/configs/meteonews.ini', APPLICATION_ENV);
-
+        $this->config = $config;
+ 
         $geonamesLists = array(
             'main_regions', 
             'important_regions', 
@@ -125,8 +128,8 @@ class UpdateWeatherCommand extends Console\Command\Command
     protected function getApiData($feed,$locationType,$locationId)
     {
         $url = "http://mmv.feeds.meteonews.net/$feed/$locationType/$locationId.xml";
-        $user = 'mmv';
-        $pass = 'NZUG$ObvwGx/%!+,';
+        $user = $this->config->api_user;
+        $pass = $this->config->api_pass;
         $parameters = array( 'cumulation' => '1h', 'lang' => 'de');
 
         $client = new \Zend_Http_Client($url);
