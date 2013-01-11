@@ -7,9 +7,13 @@
 
 namespace Newscoop;
 
+use Countable;
+use IteratorAggregate;
+use ArrayIterator;
+
 /**
  */
-class ListResult
+class ListResult implements Countable, IteratorAggregate
 {
     /**
      * @var int
@@ -20,4 +24,20 @@ class ListResult
      * @var Iterator
      */
     public $items = array();
+
+    /**
+     * @return int
+     */
+    public function count()
+    {
+        return (int) $this->count;
+    }
+
+    /**
+     * @return Iterator
+     */
+    public function getIterator()
+    {
+        return new ArrayIterator($this->items);
+    }
 }

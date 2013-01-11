@@ -80,10 +80,10 @@ class UsersList extends ListObject
 
         $service = $GLOBALS['controller']->getHelper('service')->getService('user.list');
         $list = $service->findByCriteria($criteria);
-        $p_count = $list->count;
+        $p_count = count($list);
 
         $metaUsers = array();
-        foreach ($list->items as $user) {
+        foreach ($list as $user) {
             $metaUsers[] = new MetaUser($user);
         }
 
