@@ -31,7 +31,7 @@ return array(
     'Login successful. Please wait...' => 'Login successful. Please wait...',
     'Logout successful. Please wait...' => 'Logout successful. Please wait...',
     'You have been banned from writing feedbacks.' => 'You have been banned from writing feedbacks.',
-    'You are not logged in.' => 'You are not logged in.',
+    'You are not logged in.' => 'Sie sind nicht eingeloggt.',
     'File is uploaded and your message is sent.' => 'File is uploaded and your message is sent.',
     'Your message is sent.' => 'Your message is sent.',
     'Following errors have been found:' => 'Following errors have been found:',
