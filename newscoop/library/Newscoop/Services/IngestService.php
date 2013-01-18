@@ -236,11 +236,11 @@ class IngestService
     {
         foreach (glob($this->config['path'] . '/*.xml') as $file) {
 
-            if ($feed->getUpdated() && $feed->getUpdated()->getTimestamp() > filectime($file) + self::IMPORT_DELAY) {
+            if ($feed->getUpdated() && $feed->getUpdated()->getTimestamp() > filemtime($file) + self::IMPORT_DELAY) {
                 continue;
             }
 
-            if (time() < filectime($file) + self::IMPORT_DELAY) {
+            if (time() < filemtime($file) + self::IMPORT_DELAY) {
                 continue;
             }
 
