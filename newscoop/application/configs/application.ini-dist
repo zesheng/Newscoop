@@ -90,8 +90,8 @@ listener[] = comment
 listener[] = community_feed
 listener[] = user_points
 listener[] = user_attributes
-listener[] = comment_notification
-listener[] = search.indexer.article
+;listener[] = comment_notification
+;listener[] = search.indexer.article
 
 ; audit events
 audit.events[] = comment.update
@@ -174,7 +174,7 @@ comment.events[] = comment.delete
 
 comment_notification.events[] = comment.create
 
-search_indexer_article.events[] = article.delete
+;search_indexer_article.events[] = article.delete
 
 ; autoloader dirs
 autoloader.dirs[] = APPLICATION_PATH "/../classes"
