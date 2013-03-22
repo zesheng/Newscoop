@@ -6,9 +6,6 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.txt
  */
 
-require_once($GLOBALS['g_campsiteDir'].'/include/captcha/php-captcha.inc.php');
-require_once($GLOBALS['g_campsiteDir'].'/include/get_ip.php');
-
 /**
  * Contact controller
  */
