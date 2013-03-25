@@ -12,7 +12,8 @@
 class ContactController extends Zend_Controller_Action
 {
 
-    public function indexAction() {
+    public function indexAction() 
+    {
         $this->_helper->layout->disableLayout();
 
         if ($this->getRequest()->isPost()) {
