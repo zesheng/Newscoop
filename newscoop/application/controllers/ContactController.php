@@ -12,13 +12,15 @@
 class ContactController extends Zend_Controller_Action
 {
 
-    public function indexAction() {
+    public function indexAction() 
+    {
         $this->_helper->layout->disableLayout();
 
         if ($this->getRequest()->isPost()) {
             $container = \Zend_Registry::get('container');
             $mailer = $container->getService('email');
             $parameters = $this->getRequest()->getParams();
+            $configOptions = $this->getInvokeArg('bootstrap')->getOption('email');
             $errors = array();
 
             $publicationObj = new Publication(CampRequest::GetVar('publicationId', '', 'POST'));
@@ -29,9 +31,8 @@ class ContactController extends Zend_Controller_Action
                 }
             }
 
-
             if (count($errors) == 0) {
-                $mailer->sendHtml($parameters['topic'], $parameters['subject'] .'<br />'. $parameters['contact_email'] .'<br />'. $parameters['contact_message'], array('kontakt@zentralplus.ch'));
+                $mailer->sendHtml($parameters['topic'], $parameters['subject'] .'<br />'. $parameters['contact_email'] .'<br />'. $parameters['contact_message'], array($configOptions['email']['contact']));
                 $this->view->success = true;
             } else {
                 $this->view->errors = $errors;
