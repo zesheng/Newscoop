@@ -32,7 +32,7 @@ class ContactController extends Zend_Controller_Action
             }
 
             if (count($errors) == 0) {
-                $mailer->sendHtml($parameters['topic'], $parameters['subject'] .'<br />'. $parameters['contact_email'] .'<br />'. $parameters['contact_message'], array($configOptions['email']['contact']));
+                $mailer->sendHtml($parameters['topic'], $parameters['subject'] .'<br />'. $parameters['contact_email'] .'<br />'. $parameters['contact_message'], array($configOptions['contact']));
                 $this->view->success = true;
             } else {
                 $this->view->errors = $errors;
