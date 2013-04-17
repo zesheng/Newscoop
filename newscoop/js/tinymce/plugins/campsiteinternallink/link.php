@@ -64,7 +64,6 @@ if (($languageId != 0) && ($publicationId != 0) && ($issueId != 0) && ($sectionI
         } else {
               $articles = Article::GetArticles($publicationId, $issueId, $sectionId, $languageId);
         }
-  // $articles = Article::GetArticles($publicationId, $issueId, $sectionId, $languageId);
 }
 ?>
 
