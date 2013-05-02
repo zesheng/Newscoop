@@ -44,7 +44,9 @@ class UpdateWeatherCommand extends Console\Command\Command
             'main_regions', 
             'important_regions', 
             'important_winter_regions', 
-            'teaser_slopes'
+            'important_summer_regions', 
+            'wanderwetter_regions', 
+            'teaser_regions'
         );
 
         $mexsLists = array(
@@ -124,23 +126,36 @@ class UpdateWeatherCommand extends Console\Command\Command
             } 
         }
 
-        // load mountain evelation forecast data for the next 5 days
+	// load mountain evelation forecast data for the next 5 days
         foreach ($config->bergwetter as $location) {
             $locationType = 'mexs';
             $start = date('Y-m-d');
-            $end = date('Y-m-d', mktime(0, 0, 0, date('m'), date('d') + 5, date('Y'))); 
-            print $end;
-            $data = $this->getApiData('forecasts',$locationType,$location->id,'6h',$start,$end);
-            var_dump($data);
-        } 
+            $end = date('Y-m-d', mktime(0, 0, 0, date('m'), date('d') + 4, date('Y')));
+            $data = $this->getApiData('forecasts',$locationType,$location->id,'3h',$start,$end);
+            $this->saveForecastData($data,
+                $location->id,
+                'bergwetter' . $location->elevation,
+                'mexs',
+                'bergwetter',
+                'bergwetter' . $location->elevation,
+                $location->elevation
+            );
+        }
+
+        // delete old records
+        $yesterday = date('Y-m-d', mktime(0, 0, 0, date('m'), date('d') - 1, date('Y')));
+        $em = \Zend_Registry::get('container')->getService('em');
+        $weatherStatRepository = $em->getRepository('Newscoop\Entity\WeatherStat'); 
+        $weatherStatRepository->deleteByDate($yesterday);
+	 
     }
 
-    protected function getApiData($feed,$locationType,$locationId,$cumulation,$begin,$end)
+    protected function getApiData($feed,$locationType,$locationId,$cumulation,$begin = null,$end = null)
     {
         $url = "http://mmv.feeds.meteonews.net/$feed/$locationType/$locationId.xml";
         $user = $this->config->api_user;
         $pass = $this->config->api_pass;
-        $parameters = array( 'cumulation' => $cumulation, 'lang' => 'de');
+	$parameters = array( 'cumulation' => $cumulation, 'lang' => 'de');
         if ($begin) {
             $parameters['begin'] = $begin;
         }
@@ -170,8 +185,9 @@ class UpdateWeatherCommand extends Console\Command\Command
             foreach ($timeperiods as $key => $record) {
                 $time = date_parse($record["end_datetime"]);
                 $hour = $time['hour'];
+		$date = $time['year'] . '-' . $time['month'] . '-' . $time['day'];
 
-                $searchBy = array('locationId' => $locationId, 'locationList' => $locationList, 'hour' => $hour);
+                $searchBy = array('locationId' => $locationId, 'locationList' => $locationList, 'statDate' => new \DateTime($date), 'hour' => $hour);
 
                 if ($weatherStatRepository->countBy($searchBy) > 0) {
                     $weatherStat = $weatherStatRepository->findOneBy($searchBy);
@@ -184,6 +200,7 @@ class UpdateWeatherCommand extends Console\Command\Command
                     'location_name' => (string)$locationName,
                     'location_list' => (string)$locationList,
                     'region_name' => (string)$regionName,
+		    'stat_date' =>  new \DateTime($date),
                     'hour' => (int)$hour,
                     'symbol' => (int)($record->symb) ? $record->symb : 0,
                     'temperature' => (int)($record->temp) ? $record->temp : 0,
