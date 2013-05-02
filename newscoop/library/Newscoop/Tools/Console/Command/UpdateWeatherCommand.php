@@ -43,14 +43,14 @@ class UpdateWeatherCommand extends Console\Command\Command
         $geonamesLists = array(
             'main_regions', 
             'important_regions', 
-            'important_winter_regions', 
+            //'important_winter_regions', 
             'important_summer_regions', 
             'wanderwetter_regions', 
             'teaser_regions'
         );
 
         $mexsLists = array(
-            'important_winter_slopes',
+            //'important_winter_slopes',
         );
 
         // get data for geonames ids
