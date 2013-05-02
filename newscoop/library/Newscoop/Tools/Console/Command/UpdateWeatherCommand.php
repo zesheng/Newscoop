@@ -55,7 +55,7 @@ class UpdateWeatherCommand extends Console\Command\Command
         foreach ($geonamesLists as $list) {
             foreach ($config->$list as $location) {
                 $locationType = 'geonames';
-                $data = $this->getApiData('forecasts',$locationType,$location->id);
+                $data = $this->getApiData('forecasts',$locationType,$location->id,'1h');
                 $this->saveForecastData($data,
                     $location->id,
                     $location->name,
@@ -73,7 +73,7 @@ class UpdateWeatherCommand extends Console\Command\Command
                 $locationType = 'mexs';
 
                 // get forecast data
-                $data = $this->getApiData('forecasts',$locationType,$location->id);
+                $data = $this->getApiData('forecasts',$locationType,$location->id,'1h');
                 $this->saveForecastData($data,
                     $location->id,
                     $location->name,
@@ -84,7 +84,7 @@ class UpdateWeatherCommand extends Console\Command\Command
                 );
 
                 // get wintersports data
-                $data = $this->getApiData('wintersports',$locationType,$location->id);
+                $data = $this->getApiData('wintersports',$locationType,$location->id,'1h');
                 $this->saveWintersportsData($data,
                     $location->id,
                     $location->name,
@@ -98,7 +98,7 @@ class UpdateWeatherCommand extends Console\Command\Command
         // get data for all slopes lists
         foreach ($config->main_regions as $location) {
             $locationType = 'geonames';
-            $slopeData = $this->getApiData('wintersports',$locationType,$location->id);
+            $slopeData = $this->getApiData('wintersports',$locationType,$location->id,'1h');
             $this->saveAllWintersportsData($slopeData,
                 'mexs',
                 'all_slopes',
@@ -111,7 +111,7 @@ class UpdateWeatherCommand extends Console\Command\Command
                     $locationId = $record["mexs_id"];
                     $locationName = $record["name"];
                         
-                    $data = $this->getApiData('forecasts','mexs',$locationId);
+                    $data = $this->getApiData('forecasts','mexs',$locationId,'1h');
                     $this->saveForecastData($data,
                         $locationId,
                         $locationName,
@@ -122,15 +122,31 @@ class UpdateWeatherCommand extends Console\Command\Command
                     );
                 }
             } 
+        }
+
+        // load mountain evelation forecast data for the next 5 days
+        foreach ($config->bergwetter as $location) {
+            $locationType = 'mexs';
+            $start = date('Y-m-d');
+            $end = date('Y-m-d', mktime(0, 0, 0, date('m'), date('d') + 5, date('Y'))); 
+            print $end;
+            $data = $this->getApiData('forecasts',$locationType,$location->id,'6h',$start,$end);
+            var_dump($data);
         } 
     }
 
-    protected function getApiData($feed,$locationType,$locationId)
+    protected function getApiData($feed,$locationType,$locationId,$cumulation,$begin,$end)
     {
         $url = "http://mmv.feeds.meteonews.net/$feed/$locationType/$locationId.xml";
         $user = $this->config->api_user;
         $pass = $this->config->api_pass;
-        $parameters = array( 'cumulation' => '1h', 'lang' => 'de');
+        $parameters = array( 'cumulation' => $cumulation, 'lang' => 'de');
+        if ($begin) {
+            $parameters['begin'] = $begin;
+        }
+        if ($end) {
+            $parameters['end'] = $end;
+        }
 
         $client = new \Zend_Http_Client($url);
         $client->setMethod(\Zend_Http_Client::GET);
