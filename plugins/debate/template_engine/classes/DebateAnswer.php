@@ -407,7 +407,7 @@ class DebateAnswer extends DatabaseObject
     {
         global $g_ado_db;
         $hasDebateNr = false;
-        $hasLanguageId = fase;
+        $hasLanguageId = false;
         $selectClauseObj = new SQLSelectClause();
 
         if (!is_array($p_parameters)) {
