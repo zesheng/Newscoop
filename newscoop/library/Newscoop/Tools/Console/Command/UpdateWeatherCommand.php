@@ -46,7 +46,7 @@ class UpdateWeatherCommand extends Console\Command\Command
             //'important_winter_regions', 
             'important_summer_regions', 
             'wanderwetter_regions'
-            //'teaser_regions'
+            'wander_teaser_regions'
         );
 
         $winterLists = array(
@@ -201,6 +201,7 @@ class UpdateWeatherCommand extends Console\Command\Command
         $client = new \Zend_Http_Client($url);
         $client->setMethod(\Zend_Http_Client::GET);
         $client->setAuth($user,$pass, \Zend_Http_Client::AUTH_BASIC);
+        $client->setConfig(array('timeout'=>30));
         $client->setParameterGet($parameters);
         $body = $client->request()->getBody();
 
