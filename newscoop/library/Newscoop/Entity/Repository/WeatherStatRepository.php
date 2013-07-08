@@ -142,4 +142,18 @@ class WeatherStatRepository extends EntityRepository
             ->setParameter('date', $date)
             ->execute();
     }
+
+    /**
+     * Delete by date
+     *
+     * @param date $date
+     * @return boolean 
+     */
+    public function truncate()
+    {
+        $em = $this->getEntityManager();
+        $connection = $em->getConnection();
+        $platform   = $connection->getDatabasePlatform();
+        $connection->executeUpdate($platform->getTruncateTableSQL('weather_stat', false));
+    }
 }

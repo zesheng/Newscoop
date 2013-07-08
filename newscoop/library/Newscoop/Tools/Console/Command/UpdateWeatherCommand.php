@@ -39,13 +39,17 @@ class UpdateWeatherCommand extends Console\Command\Command
     {
         $config = new \Zend_Config_Ini( APPLICATION_PATH . '/configs/meteonews.ini', APPLICATION_ENV);
         $this->config = $config;
+
+        $em = \Zend_Registry::get('container')->getService('em');
+        $weatherStatRepository = $em->getRepository('Newscoop\Entity\WeatherStat');
+        $weatherStatRepository->truncate();
  
         $geonamesLists = array(
             'main_regions', 
             'important_regions', 
             //'important_winter_regions', 
             'important_summer_regions', 
-            'wanderwetter_regions'
+            'wanderwetter_regions',
             'wander_teaser_regions'
         );
 
@@ -177,12 +181,6 @@ class UpdateWeatherCommand extends Console\Command\Command
             );
         }
 
-        // delete old records
-        $yesterday = date('Y-m-d', mktime(0, 0, 0, date('m'), date('d') - 1, date('Y')));
-        $em = \Zend_Registry::get('container')->getService('em');
-        $weatherStatRepository = $em->getRepository('Newscoop\Entity\WeatherStat'); 
-        $weatherStatRepository->deleteByDate($yesterday);
-	 
     }
 
     protected function getApiData($feed,$locationType,$locationId,$cumulation,$begin = null,$end = null)
@@ -198,10 +196,9 @@ class UpdateWeatherCommand extends Console\Command\Command
             $parameters['end'] = $end;
         }
 
-        $client = new \Zend_Http_Client($url);
+        $client = new \Zend_Http_Client($url, array('timeout', 30));
         $client->setMethod(\Zend_Http_Client::GET);
         $client->setAuth($user,$pass, \Zend_Http_Client::AUTH_BASIC);
-        $client->setConfig(array('timeout'=>30));
         $client->setParameterGet($parameters);
         $body = $client->request()->getBody();
 
