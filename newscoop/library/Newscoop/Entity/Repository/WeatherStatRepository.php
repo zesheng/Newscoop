@@ -144,9 +144,8 @@ class WeatherStatRepository extends EntityRepository
     }
 
     /**
-     * Delete by date
+     * Truncate weather_stat table
      *
-     * @param date $date
      * @return boolean 
      */
     public function truncate()
