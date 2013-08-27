@@ -16,7 +16,7 @@ use Newscoop\Http\ClientFactory;
  */
 class SolrIndex implements Index
 {
-    const UPDATE_URI = '{core}/update/json';
+    const UPDATE_URI = '{core}/update/json?commit=true';
     const QUERY_URI = '{core}/select{?q,fq,sort,start,rows,fl,wt,df,defType,qf}';
 
     /**
