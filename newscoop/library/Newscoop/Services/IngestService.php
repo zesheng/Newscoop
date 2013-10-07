@@ -310,19 +310,14 @@ class IngestService
      */
     private function updateInfosperberFeed(Feed $feed)
     {
-
         $stories    = array();
         $fetchables = array(
-            // I thinks it's unneccesary to include this, since other feeds
-            // already contain all articles.
-            //''                      => 'http://www.infosperber.ch/inc/rss.cfm', // General
             'section_wirtschaft'     => 'http://www.infosperber.ch/inc/rss.cfm?id=4', // Economy
             'section_politik'        => 'http://www.infosperber.ch/inc/rss.cfm?id=3', // Politics
-            'section_gesellschaft'   => 'http://www.infosperber.ch/inc/rssSpezial.cfm' // Society
+            'section_gesellschaft'   => 'http://www.infosperber.ch/inc/rssSpezial.cfm', // Society
         );
 
         foreach ($fetchables AS $section => $url) {
-
             try {
                 $http = new \Zend_Http_Client($url);
                 $response = $http->request();
@@ -343,9 +338,7 @@ class IngestService
 
         // Handle stories
         foreach ($storiesPerSection AS $section => $stories) {
-
             foreach ($stories AS $story) {
-
                 try {
                     $parser = new InfosperberParser($story, $section);
                     $entry = $this->getPrevious($parser, $feed);
@@ -363,7 +356,6 @@ class IngestService
         $feed->setUpdated(new \DateTime());
         $this->em->persist($feed);
         $this->em->flush();
-
     }
 
     /**

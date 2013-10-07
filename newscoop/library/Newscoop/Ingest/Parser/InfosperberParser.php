@@ -20,15 +20,15 @@ class InfosperberParser implements Parser
     /** @var DateTime */
     private $date;
 
-    /** @var Subject */
+    /** @var string */
     private $subject;
 
     /**
      * @param string $content
+     * @param string $subject
      */
-    public function __construct($content, $subject='')
+    public function __construct($content, $subject = '')
     {
-
         if (is_object($content) && get_class($content) == 'SimpleXMLElement') {
             $this->story = $content;
         } else {
@@ -40,8 +40,7 @@ class InfosperberParser implements Parser
         try {
             $dateString = $this->getString($this->story->xpath('pubDate'));
             $this->date = \DateTime::createFromFormat(DATE_RFC2822, $dateString);
-        }
-        catch (Exception $e) {
+        } catch (Exception $e) {
             $this->date = new \DateTime();
         }
     }
@@ -242,8 +241,8 @@ class InfosperberParser implements Parser
     /**
      * Extract individual stories from the XML feed
      */
-    public function getStories($xml) {
-
+    public function getStories($xml)
+    {
         try {
             $xmlObj = simplexml_load_string($xml);
         } catch(\Exception $e) {
