@@ -317,7 +317,7 @@ class IngestService
             'section_gesellschaft'   => 'http://www.infosperber.ch/inc/rssSpezial.cfm', // Society
         );
 
-        foreach ($fetchables AS $section => $url) {
+        foreach ($fetchables as $section => $url) {
             try {
                 $http = new \Zend_Http_Client($url);
                 $response = $http->request();
@@ -337,8 +337,8 @@ class IngestService
         }
 
         // Handle stories
-        foreach ($storiesPerSection AS $section => $stories) {
-            foreach ($stories AS $story) {
+        foreach ($storiesPerSection as $section => $stories) {
+            foreach ($stories as $story) {
                 try {
                     $parser = new InfosperberParser($story, $section);
                     $entry = $this->getPrevious($parser, $feed);
