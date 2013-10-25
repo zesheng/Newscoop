@@ -333,6 +333,7 @@ final class CampContext
 
         if (defined('APPLICATION_PATH')) {
             $options = $controller->getInvokeArg('bootstrap')->getOptions();
+
             $form = new \Application_Form_Contact();
             $form->setMethod('POST');
             $request = \Zend_Controller_Front::getInstance()->getRequest();
@@ -341,7 +342,7 @@ final class CampContext
                 $email->setFrom($form->email->getValue(), $form->first_name->getValue() . ' ' . $form->last_name->getValue())
                     ->setSubject($form->subject->getValue())
                     ->setBodyText($form->message->getValue())
-                    ->addTo($options['email']['contact'])
+                    ->addTo(\SystemPref::Get("EmailContact"))
                     ->send();
 
                 $controller->getHelper('flashMessenger')->addMessage("form_contact_done");
@@ -714,6 +715,7 @@ final class CampContext
      * @return int - the current list identifier
      */
     public function current_list_id() {
+        $objectName = $this->GetListObjectName(get_class($this->m_readonlyProperties['current_list']));
         $listName = $this->m_listObjects[$objectName]['list'];
         if (!isset($this->m_readonlyProperties['current_list'])) {
             return null;
