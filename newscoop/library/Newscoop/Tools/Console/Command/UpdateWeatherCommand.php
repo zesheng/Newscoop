@@ -48,7 +48,8 @@ class UpdateWeatherCommand extends Console\Command\Command
             'main_regions', 
             'important_regions', 
             'important_winter_regions', 
-            'important_summer_regions', 
+            'important_summer_regions',
+            'teaser_slopes',
             //'wanderwetter_regions',
             //'wander_teaser_regions'
         );
@@ -136,21 +137,23 @@ class UpdateWeatherCommand extends Console\Command\Command
         // get data for all baths lists
         foreach ($config->main_regions as $location) {
             $locationType = 'geonames';
-            $bathData = $this->getApiData('waters',$locationType,$location->id,'24h');
-            // only needed suring winter months
-            //$this->saveAllWintersportsData($slopeData,
-            //    'mexs',
-            //    'all_slopes',
-            //    $location->name
-            //);
-            $this->saveAllBathsData($bathData,
+            $locationData = $this->getApiData('wintersports',$locationType,$location->id,'24h');
+            // only needed during winter months
+            $this->saveAllWintersportsData($locationData,
                 'mexs',
-                'all_baths',
+                'all_slopes',
                 $location->name
             );
+            //$locationData = $this->getApiData('waters',$locationType,$location->id,'24h');
+            //$this->saveAllBathsData($locationData,
+            //    'mexs',
+            //    'all_baths',
+            //    $location->name
+            //);
 
             // now load forecast data
-            foreach ($bathData->content as $regions) {
+            /*
+            foreach ($locationData->content as $regions) {
                 foreach ($regions as $key => $record) {
                     $locationId = $record->mexs_id;
                     $locationName = $record->water . ", " . $record->name;
@@ -168,7 +171,8 @@ class UpdateWeatherCommand extends Console\Command\Command
                         );
                     }
                 }
-            } 
+            }
+            */ 
         }
 
 	    // load mountain evelation forecast data for the next 5 days
