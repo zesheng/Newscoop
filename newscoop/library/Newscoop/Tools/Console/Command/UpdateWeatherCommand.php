@@ -47,14 +47,14 @@ class UpdateWeatherCommand extends Console\Command\Command
         $geonamesLists = array(
             'main_regions', 
             'important_regions', 
-            //'important_winter_regions', 
+            'important_winter_regions', 
             'important_summer_regions', 
-            'wanderwetter_regions',
-            'wander_teaser_regions'
+            //'wanderwetter_regions',
+            //'wander_teaser_regions'
         );
 
         $winterLists = array(
-            //'important_winter_slopes',
+            'important_winter_slopes',
         );
 
         $summerLists = array(
