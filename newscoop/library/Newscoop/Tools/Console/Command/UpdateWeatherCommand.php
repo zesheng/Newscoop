@@ -152,11 +152,11 @@ class UpdateWeatherCommand extends Console\Command\Command
             //);
 
             // now load forecast data
-            /*
             foreach ($locationData->content as $regions) {
                 foreach ($regions as $key => $record) {
-                    $locationId = $record->mexs_id;
-                    $locationName = $record->water . ", " . $record->name;
+                    $locationId = $record["mexs_id"];
+                    //$locationName = $record->water . ", " . $record->name;
+                    $locationName = $record["name"];
     
                     $data = $this->getApiData('forecasts','mexs',$locationId,'24h');
                     if ($data) {
@@ -164,7 +164,7 @@ class UpdateWeatherCommand extends Console\Command\Command
                             $locationId,
                             $locationName,
                             'mexs',
-                            'all_baths',
+                            'all_slopes',
                             $location->name,
                             $location->elevation,
                             false
@@ -172,7 +172,6 @@ class UpdateWeatherCommand extends Console\Command\Command
                     }
                 }
             }
-            */ 
         }
 
 	    // load mountain evelation forecast data for the next 5 days
