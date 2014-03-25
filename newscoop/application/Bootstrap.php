@@ -152,7 +152,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
 
         $container->register('content.type', 'Newscoop\Content\ContentTypeService')
             ->addArgument(new sfServiceReference('em'));
-        
+
         $container->register('stat', 'Newscoop\Services\StatService')
             ->addArgument(new sfServiceReference('em'));
 
@@ -212,7 +212,8 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
 
         $container->register('search.indexer.article', 'Newscoop\Search\ArticleIndexer')
             ->addArgument(new sfServiceReference('em'))
-            ->addArgument(new sfServiceReference('search.index'));
+            ->addArgument(new sfServiceReference('search.index'))
+            ->addArgument('%config%');
 
         $container->register('preferences', 'SystemPref')
             ->addArgument('%config%');
