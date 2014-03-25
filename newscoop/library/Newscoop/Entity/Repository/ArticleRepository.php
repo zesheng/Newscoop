@@ -25,7 +25,7 @@ class ArticleRepository extends DatatableSource
         $query = $this->createQueryBuilder('a')
             ->where('a.indexed IS NULL')
             ->orWhere('a.indexed < a.updated')
-            ->orderBy('a.updated', 'desc')
+            ->orderBy('a.indexed', 'asc')
             ->setMaxResults($limit)
             ->getQuery();
 
@@ -49,9 +49,9 @@ class ArticleRepository extends DatatableSource
         $query = $this->getEntityManager()
                 ->createQuery("UPDATE Newscoop\Entity\Article a SET a.indexed = :date, a.updated = a.updated WHERE a.number = :number AND a.language = :language")
                 ->setParameters(array(
-                    'date' => new \DateTime(),
-                    'number' => $article->getNumber(),
-                    'language' => $article->getLanguageId(),
+                    'date' => new \DateTime(), 
+                    'number' => $article->getNumber(), 
+                    'language' => $article->getLanguageId(), 
                 ));
 
         $query->execute();
