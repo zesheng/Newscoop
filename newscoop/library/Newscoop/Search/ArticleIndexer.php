@@ -28,13 +28,22 @@ class ArticleIndexer
     private $index;
 
     /**
+     * @var array
+     */
+    private $config = array(
+        'additional_indexable_fields' => array()
+    );
+
+    /**
      * @param Doctrine\ORM\EntityManager $em
      * @param Newscoop\Search\Index $index
+     * @param array $config
      */
-    public function __construct(EntityManager $em, Index $index)
+    public function __construct(EntityManager $em, Index $index, array $config)
     {
         $this->em = $em;
         $this->index = $index;
+        $this->config = (object) array_merge($this->config, $config);
     }
 
     /**
@@ -47,7 +56,9 @@ class ArticleIndexer
     {
         $articles = $this->getArticleRepository()->getIndexBatch($limit);
         foreach ($articles as $article) {
-            $articleView = $article->getView();
+
+            $articleView = $this->prepareArticleForSolr($article);
+
             $this->getArticleRepository()->setArticleIndexedNow($article);
             if ($articleView->published !== null) {
                 $this->index->add($articleView);
@@ -96,6 +107,50 @@ class ArticleIndexer
         } catch (Exception $e) {
             // ignore
         }
+    }
+
+    /**
+     * Prepares the article for indexing by Solr. It creates an articleView and
+     * also changes the names of articleType specific fields that need to be
+     * indexeable by Solr. These fiels can be set in the configuration.
+     *
+     * @param  Newscoop\Entity\Article $article
+     *
+     * @return Newscoop\View\ArticleView Returns an  ArticleView of the Article
+     */
+    private function prepareArticleForSolr($article)
+    {
+        $fieldTypes = $article->getArticleDataFieldTypes();
+        $articleView = $article->getView();
+
+        foreach ($articleView AS $property => $value) {
+            if (!in_array($property, $this->config->additional_indexable_fields)) {
+                continue;
+            }
+            if (!array_key_exists($property, $fieldTypes)) {
+                continue;
+            }
+
+            switch($fieldTypes[$property]) {
+                case 'string':
+                    $newProperty = $property.'_text';
+                break;
+                case 'integer':
+                    $newProperty = $property.'_int';
+                break;
+                case 'date':
+                    $newProperty = $property.'_date';
+                break;
+                default:
+                    continue;
+                break;
+            }
+
+            $articleView->$newProperty = $articleView->$property;
+            unset($articleView->$property);
+        }
+
+        return $articleView;
     }
 
     /**

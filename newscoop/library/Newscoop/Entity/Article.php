@@ -24,7 +24,7 @@ class Article
     const STATUS_PUBLISHED = 'Y';
     const STATUS_NOT_PUBLISHED = 'N';
     const STATUS_SUBMITTED = 'S';
-    
+
     /**
      * @Id
      * @ManyToOne(targetEntity="Newscoop\Entity\Language")
@@ -53,7 +53,7 @@ class Article
      * @var Newscoop\Entity\Section
      */
     private $section;
-    
+
     /**
      * @OneToOne(targetEntity="Newscoop\Entity\User")
      * @JoinColumn(name="IdUser", referencedColumnName="Id")
@@ -109,19 +109,19 @@ class Article
      * @var int
      */
     private $comments_enabled;
-    
+
     /**
      * @Column(name="Type", nullable=True)
      * @var string
      */
     private $type;
-    
+
     /**
      * @Column(type="datetime", name="PublishDate", nullable=true)
      * @var DateTime
      */
     private $published;
-    
+
     /**
      * @Column(name="Published", nullable=true)
      * @var string
@@ -344,7 +344,7 @@ class Article
     {
         return $this->issueId;
     }
-    
+
     public function getWorkflowStatus()
     {
         return $this->workflowStatus;
@@ -423,7 +423,7 @@ class Article
     {
         return (int) $this->comments_enabled;
     }
-    
+
     /**
      * Get type
      *
@@ -433,7 +433,7 @@ class Article
     {
         return $this->type;
     }
-    
+
     /**
      * Get publishDate
      *
@@ -443,7 +443,7 @@ class Article
     {
         return $this->published;
     }
-    
+
     /**
      * Set creator
      *
@@ -609,6 +609,27 @@ class Article
                 $view->$columnName = $this->data->getFieldValue($columnName);
             }
         }
+    }
+
+    /**
+     * Gets a list of all additional fields in the articletype and their
+     * corresponding generic types.
+     *
+     * @return array
+     */
+    public function getArticleDataFieldTypes()
+    {
+        $this->initArticleData();
+        $fieldTypes = array();
+        foreach ($this->data->getUserDefinedColumns(true) as $column) {
+
+            $columnName = $column->getPrintName();
+            $columntType = $column->getGenericType();
+
+            $fieldTypes[$columnName] = $columntType;
+        }
+
+        return $fieldTypes;
     }
 
     /**
