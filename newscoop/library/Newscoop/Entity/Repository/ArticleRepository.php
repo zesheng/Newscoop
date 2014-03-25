@@ -25,7 +25,7 @@ class ArticleRepository extends DatatableSource
         $query = $this->createQueryBuilder('a')
             ->where('a.indexed IS NULL')
             ->orWhere('a.indexed < a.updated')
-            ->orderBy('a.updated', 'desc')
+	    ->orderBy('a.indexed', 'asc')
             ->setMaxResults($limit)
             ->getQuery();
 
