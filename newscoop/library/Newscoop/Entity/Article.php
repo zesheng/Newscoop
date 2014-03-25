@@ -611,6 +611,12 @@ class Article
         }
     }
 
+    /**
+     * Gets a list of all additional fields in the articletype and their
+     * corresponding generic types.
+     *
+     * @return array
+     */
     public function getArticleDataFieldTypes()
     {
         $this->initArticleData();
