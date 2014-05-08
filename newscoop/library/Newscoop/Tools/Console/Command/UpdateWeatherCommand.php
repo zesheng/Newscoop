@@ -49,9 +49,9 @@ class UpdateWeatherCommand extends Console\Command\Command
             'important_regions', 
             'important_winter_regions', 
             'important_summer_regions',
-            'teaser_slopes',
-            //'wanderwetter_regions',
-            //'wander_teaser_regions'
+            //'teaser_slopes',
+            'wanderwetter_regions',
+            'wander_teaser_regions'
         );
 
         $winterLists = array(
@@ -59,7 +59,7 @@ class UpdateWeatherCommand extends Console\Command\Command
         );
 
         $summerLists = array(
-            //'teaser_regions'
+            'teaser_regions'
         );
 
         // get data for geonames ids
