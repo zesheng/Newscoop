@@ -49,7 +49,7 @@ class UpdateWeatherCommand extends Console\Command\Command
             'important_regions', 
             'important_winter_regions', 
             'important_summer_regions',
-            //'teaser_slopes',
+            'teaser_slopes',
             'wanderwetter_regions',
             'wander_teaser_regions'
         );
@@ -137,27 +137,28 @@ class UpdateWeatherCommand extends Console\Command\Command
         // get data for all baths lists
         foreach ($config->main_regions as $location) {
             $locationType = 'geonames';
+
+            // needed during winter months
             $locationData = $this->getApiData('wintersports',$locationType,$location->id,'24h');
-            // only needed during winter months
             $this->saveAllWintersportsData($locationData,
                 'mexs',
                 'all_slopes',
                 $location->name
             );
-            //$locationData = $this->getApiData('waters',$locationType,$location->id,'24h');
-            //$this->saveAllBathsData($locationData,
-            //    'mexs',
-            //    'all_baths',
-            //    $location->name
-            //);
+
+            // needed during summer months
+            $locationData = $this->getApiData('waters',$locationType,$location->id,'24h');
+            $this->saveAllBathsData($locationData,
+                'mexs',
+                'all_baths',
+                $location->name
+            );
 
             // now load forecast data
             foreach ($locationData->content as $regions) {
                 foreach ($regions as $key => $record) {
-                    $locationId = $record["mexs_id"];
-                    //$locationName = $record->water . ", " . $record->name;
-                    $locationName = $record["name"];
-    
+                    $locationId = ($record["mexs_id"]) ? $record["mexs_id"] : $record->mexs_id;
+                    $locationName = ($record["name"]) ? $record["name"] : $record->water . ", " . $record->name;
                     $data = $this->getApiData('forecasts','mexs',$locationId,'24h');
                     if ($data) {
                         $this->saveForecastData($data,
@@ -274,7 +275,7 @@ class UpdateWeatherCommand extends Console\Command\Command
                     'location_name' => (string)$locationName,
                     'location_list' => (string)$locationList,
                     'region_name' => (string)$regionName,
-		            'stat_date' =>  new \DateTime($date),
+		    'stat_date' =>  new \DateTime($date),
                     'hour' => (int)$hour,
                     'symbol' => (int)($record->symb) ? $record->symb : 0,
                     'temperature' => (int)($record->temp_avg) ? $record->temp_avg : 0,
