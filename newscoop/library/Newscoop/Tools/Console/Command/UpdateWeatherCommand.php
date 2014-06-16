@@ -165,7 +165,7 @@ class UpdateWeatherCommand extends Console\Command\Command
                             $locationId,
                             $locationName,
                             'mexs',
-                            'all_slopes',
+                            'all_baths',
                             $location->name,
                             $location->elevation,
                             false
@@ -275,7 +275,7 @@ class UpdateWeatherCommand extends Console\Command\Command
                     'location_name' => (string)$locationName,
                     'location_list' => (string)$locationList,
                     'region_name' => (string)$regionName,
-		    'stat_date' =>  new \DateTime($date),
+		            'stat_date' =>  new \DateTime($date),
                     'hour' => (int)$hour,
                     'symbol' => (int)($record->symb) ? $record->symb : 0,
                     'temperature' => (int)($record->temp_avg) ? $record->temp_avg : 0,
