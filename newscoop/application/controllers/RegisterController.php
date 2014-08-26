@@ -57,21 +57,21 @@ class RegisterController extends Zend_Controller_Action
 
         $this->view->form = $form;
     }
-
+    
     public function createUserAction()
     {
         $parameters = $this->getRequest()->getParams();
-
+        
         $user = $this->_helper->service('user')->findBy(array(
             'email' => $parameters['email'],
         ));
-
+        
         if ($user) {
             echo '0';
             exit;
         } else {
             $user = $this->_helper->service('user')->createPending($parameters['email'], $parameters['first_name'], $parameters['last_name'], $parameters['subscriber_id']);
-
+            
             $this->_helper->service('email')->sendConfirmationToken($user);
             echo '1';
             exit;
@@ -102,13 +102,6 @@ class RegisterController extends Zend_Controller_Action
 
         $listView = $this->_helper->service('mailchimp.list')->getListView();
         $this->_helper->newsletter->initForm($form, $listView);
-
-        $form->populate(
-            'newletter' => array(
-                'subscriber' => 1,
-                'Häufigkeit' => 'täglich',
-            ),
-        );
 
         $request = $this->getRequest();
         if ($request->isPost() && $form->isValid($request->getPost())) {
@@ -177,7 +170,7 @@ class RegisterController extends Zend_Controller_Action
     {
         if ($this->_getParam('email')) {
             $user = $this->_helper->service('user')->findBy(array('email' => $this->_getParam('email')));
-
+            
             if ($user) {
                 $this->view->result = '0';
             }
