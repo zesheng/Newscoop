@@ -147,12 +147,14 @@ class UpdateWeatherCommand extends Console\Command\Command
             );
 
             // needed during summer months
+            /*
             $locationData = $this->getApiData('waters',$locationType,$location->id,'24h');
             $this->saveAllBathsData($locationData,
                 'mexs',
                 'all_baths',
                 $location->name
             );
+            */
 
             // now load forecast data
             foreach ($locationData->content as $regions) {
@@ -165,7 +167,8 @@ class UpdateWeatherCommand extends Console\Command\Command
                             $locationId,
                             $locationName,
                             'mexs',
-                            'all_baths',
+                            //'all_baths',
+                            'all_slopes',
                             $location->name,
                             $location->elevation,
                             false
