@@ -103,12 +103,12 @@ class RegisterController extends Zend_Controller_Action
         $listView = $this->_helper->service('mailchimp.list')->getListView();
         $this->_helper->newsletter->initForm($form, $listView);
 
-        $form->populate(
-            'newletter' => array(
+        $form->populate(array(
+            'newsletter' => array(
                 'subscriber' => 1,
                 'Häufigkeit' => 'täglich',
             ),
-        );
+        ));
 
         $request = $this->getRequest();
         if ($request->isPost() && $form->isValid($request->getPost())) {
