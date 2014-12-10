@@ -34,7 +34,16 @@ class AuthController extends Zend_Controller_Action
             $result = $this->auth->authenticate($adapter);
 
             if ($result->getCode() == Zend_Auth_Result::SUCCESS) {
-                $this->_helper->redirector('index', 'dashboard');
+                $referer = $request->getHeader('referer');
+                $parse = parse_url($referer);
+                $refererHost = $parse['host'];
+                $thisHost = $this->getRequest()->getHttpHost();
+
+                if ($refererHost == $thisHost) {
+                    $this->_helper->redirector->gotoUrl($referer);
+                } else {
+                    $this->_helper->redirector('index', 'dashboard');
+                }
             } else {
                 $form->addError($this->view->translate("Invalid credentials"));
             }
