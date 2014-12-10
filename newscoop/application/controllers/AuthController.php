@@ -34,16 +34,10 @@ class AuthController extends Zend_Controller_Action
             $result = $this->auth->authenticate($adapter);
 
             if ($result->getCode() == Zend_Auth_Result::SUCCESS) {
-                $referer = $request->getHeader('referer');
-                $parse = parse_url($referer);
-                $refererHost = $parse['host'];
-                $thisHost = $this->getRequest()->getHttpHost();
-
-                if ($refererHost == $thisHost) {
-                    $this->_helper->redirector->gotoUrl($referer);
-                } else {
-                    $this->_helper->redirector('index', 'dashboard');
+                if ($request->query->has('_target_path')) {
+                    $this->_helper->redirector->gotoUrl($request->query->get('_target_path'));
                 }
+                $this->_helper->redirector('index', 'dashboard');
             } else {
                 $form->addError($this->view->translate("Invalid credentials"));
             }
@@ -108,6 +102,10 @@ class AuthController extends Zend_Controller_Action
             if ($user->isPending()) {
                 $this->_forward('confirm', 'register', 'default');
             } else {
+                $request = \Zend_Registry::get('container')->getService('request');
+                if ($request->query->has('_target_path')) {
+                    $this->_helper->redirector->gotoUrl($request->query->get('_target_path'));
+                } 
                 $this->_helper->redirector('index', 'dashboard');
             }
         } catch (\Exception $e) {
