@@ -34,8 +34,8 @@ class AuthController extends Zend_Controller_Action
             $result = $this->auth->authenticate($adapter);
 
             if ($result->getCode() == Zend_Auth_Result::SUCCESS) {
-                if ($request->query->has('_target_path')) {
-                    $this->_helper->redirector->gotoUrl($request->query->get('_target_path'));
+                if (isset($values['_target_path'])) {
+                    $this->_helper->redirector->gotoUrl($values['_target_path']);
                 }
                 $this->_helper->redirector('index', 'dashboard');
             } else {
@@ -102,9 +102,9 @@ class AuthController extends Zend_Controller_Action
             if ($user->isPending()) {
                 $this->_forward('confirm', 'register', 'default');
             } else {
-                $request = \Zend_Registry::get('container')->getService('request');
-                if ($request->query->has('_target_path')) {
-                    $this->_helper->redirector->gotoUrl($request->query->get('_target_path'));
+                $request = $this->getRequest();
+                if ($request->getParam('_target_path')) {
+                    $this->_helper->redirector->gotoUrl($request->getParam('_target_path'));
                 } 
                 $this->_helper->redirector('index', 'dashboard');
             }
