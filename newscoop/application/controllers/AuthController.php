@@ -34,6 +34,9 @@ class AuthController extends Zend_Controller_Action
             $result = $this->auth->authenticate($adapter);
 
             if ($result->getCode() == Zend_Auth_Result::SUCCESS) {
+                if (isset($values['_target_path'])) {
+                    $this->_helper->redirector->gotoUrl($values['_target_path']);
+                }
                 $this->_helper->redirector('index', 'dashboard');
             } else {
                 $form->addError($this->view->translate("Invalid credentials"));
@@ -99,6 +102,10 @@ class AuthController extends Zend_Controller_Action
             if ($user->isPending()) {
                 $this->_forward('confirm', 'register', 'default');
             } else {
+                $request = $this->getRequest();
+                if ($request->getParam('_target_path')) {
+                    $this->_helper->redirector->gotoUrl($request->getParam('_target_path'));
+                } 
                 $this->_helper->redirector('index', 'dashboard');
             }
         } catch (\Exception $e) {
