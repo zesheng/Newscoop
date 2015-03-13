@@ -34,6 +34,9 @@ class AuthController extends Zend_Controller_Action
             $result = $this->auth->authenticate($adapter);
 
             if ($result->getCode() == Zend_Auth_Result::SUCCESS) {
+                if (isset($values['rememberme']) && $values['rememberme'] == '1') {
+                    Zend_Session::rememberMe(315360000); // 10 years
+                }
                 if (isset($values['_target_path'])) {
                     $this->_helper->redirector->gotoUrl($values['_target_path']);
                 }
@@ -51,6 +54,8 @@ class AuthController extends Zend_Controller_Action
         if ($this->auth->hasIdentity()) {
             $this->auth->clearIdentity();
         }
+
+        Zend_Session::forgetMe();
 
         $url = $this->_request->getParam('url');
         if (!is_null($url)) {

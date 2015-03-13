@@ -15,6 +15,8 @@ class Application_Form_Login extends Zend_Form
             'value' => $_SERVER['REQUEST_URI'],
         ));
 
+        $this->addElement('checkbox', 'rememberme');
+
         $this->addElement('text', 'email', array(
             'label' => 'Email',
             'required' => true,
