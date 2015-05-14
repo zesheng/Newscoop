@@ -13,10 +13,8 @@
         
     ],
     "repositories":[
-        {
-            "type":"artifact",
-            "url":"plugins\/private_plugins"
-        }
+        {"type": "composer", "url": "http://pkg.phpcomposer.com/repo/packagist/"},
+        {"packagist": false}
     ],
     "require":{
         "php":">=5.3.3",
